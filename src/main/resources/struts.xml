@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	<!-- 管理员 -->
+	<package name="admin" extends="struts-default" namespace="/">
+		
+		<action name="login" class="com.baizhi.struts2.AdminLoginAction" method="adminLogin">
+			<result name="success" >/back/main/main.jsp</result>
+			<result name="usernamefail" type="redirect">/back/login.jsp</result>
+			<result name="passwordfail" type="redirect">/back/login.jsp</result>
+			<result name="codefail" type="redirect">/back/login.jsp</result>
+			<!-- <result name="fail">/login.jsp</result> -->
+		</action>
+		<!--<action name="selectStaff" class="com.baizhi.struts2.SelectAllStaffAction">
+			<interceptor-ref name="MyStack"></interceptor-ref>
+			<result name="selectok">/emplist.jsp</result>
+		</action>-->
+		<action name="AdminLogout" class="com.baizhi.struts2.AdminLoginAction" method="AdminLogout">
+			<result name="success" type="redirect">/back/login.jsp</result>
+		</action>
+		
+	</package>
+	
+	<!-- 分类 -->
+	<package name="category" extends="struts-default">
+		<action name="selectAllCategory" class="com.baizhi.struts2.CategoryAction" method="selectAllCategory">
+			<result name="success" >/back/category/show.jsp</result>
+		</action>
+		
+		<action name="insertOneCategory" class="com.baizhi.struts2.CategoryAction" method="insertOneCategory">
+			<result name="success" type="redirectAction">selectAllCategory</result>
+		</action>
+		
+		<action name="insertTwoCategory" class="com.baizhi.struts2.CategoryAction" method="insertTwoCategory">
+			<result name="success" type="redirectAction">selectAllCategory</result>
+		</action>
+		
+		<action name="deleteCategory" class="com.baizhi.struts2.CategoryAction" method="deleteCategory">
+			<result name="success" type="redirectAction">selectAllCategory</result>
+			<result name="fail" type="chain">selectAllCategory</result>
+		</action>
+	</package>
+	
+	<!-- 商品 -->
+	<package name="product" extends="struts-default" namespace="/">
+		<action name="selectFYProduct" class="com.baizhi.struts2.ProductAction" method="selectFYProduct">
+			<param name="page.pageNumber">1</param>
+			<result name="success" >/back/book/show.jsp</result>
+		</action>
+		<action name="selectTwoCategory" class="com.baizhi.struts2.CategoryAction" method="selectTwoCategory">
+			<result name="success">/back/book/add.jsp</result>
+		</action>
+		<!-- 添加商品  图片上传 -->
+		<action name="insertProduct" class="com.baizhi.struts2.ProductAction" method="insertProduct">
+			<!-- 为成员变量赋值 -->
+			<param name="filePath">/back/img</param>
+			<result name="success" type="redirectAction">selectFYProduct</result>
+		</action>
+		<!-- 删除商品 -->
+		<action name="deleteProduct" class="com.baizhi.struts2.ProductAction" method="deleteProduct">
+			<result name="success" type="redirectAction">selectFYProduct</result>
+		</action>
+		<!-- 按条件查询商品 -->
+		<action name="tjSelectProduct" class="com.baizhi.struts2.ProductAction" method="tjSelectProduct">
+			<result name="success">/back/book/show.jsp</result>
+		</action>
+		<!-- 查询单个商品并修改 -->
+		<action name="selectOneProduct" class="com.baizhi.struts2.ProductAction" method="selectOneProduct">
+			<result name="success">/back/book/update.jsp</result>
+		</action>
+		<!-- 修改商品 -->
+		<action name="updateProduct" class="com.baizhi.struts2.ProductAction" method="updateProduct">
+			<!-- 为成员变量赋值 -->
+			<param name="filePath">/back/img</param>
+			<result name="success" type="redirectAction">selectFYProduct</result>
+		</action>
+		<!-- 查询指定1\2级类别下的所有图书   分页-->
+		<action name="selectProductByCategory" class="com.baizhi.struts2.ProductAction" method="selectProductByCategory">
+			<param name="page.pageNumber">1</param>
+			<result name="success" >/front/main/book_list.jsp</result>
+		</action>
+		<!-- 查询单个商品 -->
+		<action name="queryOneProduct" class="com.baizhi.struts2.ProductAction" method="queryOneProduct">
+			<result name="success" >/front/main/book_detail.jsp</result>
+		</action>
+		
+		
+	</package>
+	
+	<!-- 购物车 -->
+	<package name="cart" extends="struts-default" namespace="/">
+		<!-- 添加购物车 -->
+		<action name="addCart" class="com.baizhi.struts2.CartAction" method="addCart">
+			<result name="success">/front/cart/cart_list.jsp</result>
+		</action>
+		<!-- 修改购物车商品数量 -->
+		<action name="updateCartProductCount" class="com.baizhi.struts2.CartAction" method="updateCartProductCount">
+			<result name="success">/front/cart/cart_list.jsp</result>
+		</action>
+		<!-- 删除购物车商品 -->
+		<action name="deleteCartItem" class="com.baizhi.struts2.CartAction" method="deleteCartItem">
+			<result name="success">/front/cart/cart_list.jsp</result>
+		</action>
+		<!-- 删除    删除购物车   的商品 -->
+		<action name="deleteDelCartItem" class="com.baizhi.struts2.CartAction" method="deleteDelCartItem">
+			<result name="success">/front/cart/cart_list.jsp</result>
+		</action>
+		<!-- 恢复    删除购物车   的商品 -->
+		<action name="recoverCartItem" class="com.baizhi.struts2.CartAction" method="recoverCartItem">
+			<result name="success">/front/cart/cart_list.jsp</result>
+		</action>
+		
+		<!-- 订单地址 -->
+		<action name="addressForm" class="com.baizhi.struts2.AddressAction" method="addressForm">
+			<result name="success" type="redirect">/front/order/address_form.jsp</result>
+		</action>
+		<!-- 根据id查询地址 -->
+		<action name="selectAddressById" class="com.baizhi.struts2.AddressAction" method="selectAddressById">
+			<result name="success">/front/order/address_form.jsp</result>
+		</action>
+		<!-- 修改地址  并   新建订单 -->
+		<action name="updateAddress" class="com.baizhi.struts2.AddressAction" method="updateAddress">
+			<result name="success">/front/order/order_ok.jsp</result>
+		</action>
+		<!-- 后台查询所有订单 -->
+		<action name="selectAllOrder" class="com.baizhi.struts2.AddressAction" method="selectAllOrder">
+			<result name="success">/back/order/show.jsp</result>
+		</action>
+		<!-- 查询当前订单下的订单项   订单详细信息 -->
+		<action name="selectOrderItem" class="com.baizhi.struts2.AddressAction" method="selectOrderItem">
+			<result name="success">/back/order/detail.jsp</result>
+		</action>
+	</package>
+	
+	<!-- 用户 -->
+	<package name="user" extends="struts-default" namespace="/">
+		<action name="selectAllUser" class="com.baizhi.struts2.UserAction" method="selectAllUser">
+			<result name="success" >/back/user/show.jsp</result>
+		</action>
+		<action name="updateUser" class="com.baizhi.struts2.UserAction" method="updateUser">
+			<result name="success" type="redirectAction">selectAllUser</result>
+		</action>
+		<!-- 注册 -->
+		<action name="registerUser" class="com.baizhi.struts2.UserAction" method="insertUser">
+			<result name="success">/front/user/verify_form.jsp</result>
+			<result name="fail">/front/user/register_form.jsp</result>
+		</action>
+		<!-- 激活码 -->
+		<action name="keyCode" class="com.baizhi.struts2.UserAction" method="keyCode">
+			<result name="success">/front/user/register_ok.jsp</result>
+			<result name="fail">/front/user/verify_form.jsp</result>
+		</action>
+		<!-- 登陆 -->
+		<action name="userLogin" class="com.baizhi.struts2.UserAction" method="userLogin">
+			<result name="success" type="redirectAction">
+				
+				<param name="actionName">homePage</param>
+			</result>
+			<result name="fail">/front/user/login_form.jsp</result>
+		</action>
+		<!-- 登出 -->
+		<action name="logOut" class="com.baizhi.struts2.UserAction" method="logOut">
+			<result name="success" type="redirectAction">
+				<param name="actionName">homePage</param>
+			</result>
+		</action>
+		<!-- 订单强制登陆 -->
+		<action name="QZLogin" class="com.baizhi.struts2.UserAction" method="QZLogin">
+			<result name="success" type="redirectAction">
+				<param name="actionName" >addressForm</param>
+			</result>
+			<result name="fail" >/front/user/login_form.jsp</result>
+		</action>
+	</package>
+	
+	<package name="homepage" extends="struts-default" namespace="/">
+		<action name="homePage" class="com.baizhi.struts2.HomePageAction" method="page">
+			<result name="success">/front/main/main.jsp</result>
+		</action>
+	
+	</package>
+	
+	<!-- 验证码 -->
+	<package name="code" extends="struts-default">
+		<action name="code" class="com.baizhi.validation.ValidationCodeAction">
+		<!-- return null; 没有返回值就不用写result -->
+		</action>
+	</package>
+	
+
+	
+</struts>

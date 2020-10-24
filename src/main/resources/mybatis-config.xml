@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	
+	<!-- 读取小配置文件  resource:路径   -->
+	<!-- properties必须放在最上面 -->
+	<properties resource="jdbc.properties"/>
+	
+	<!-- 通知mybatis框架开启二级缓存 -->
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<!-- 定义实体类别名 -->
+	<typeAliases>
+		<!--  alias:要起的别名  type:实体类的全限定名 -->
+		<typeAlias alias="Admin" type="com.baizhi.empty.Admin"/>
+		<typeAlias alias="Category" type="com.baizhi.empty.Category"/>
+		<typeAlias alias="Product" type="com.baizhi.empty.Product"/>
+		<typeAlias alias="User" type="com.baizhi.empty.User"/>
+		<typeAlias alias="Address" type="com.baizhi.empty.Address"/>
+		<typeAlias alias="Order" type="com.baizhi.empty.Order"/>
+		<typeAlias alias="OrderItem" type="com.baizhi.empty.OrderItem"/>
+		
+	</typeAliases>
+	
+
+	
+	<!-- 数据库的连接参数 -->
+	<environments default="oracle">
+		<!-- 数据库连接环境   id:当前连接环境的标识 随意唯一 -->
+		<environment id="oracle">
+			<!-- 事务管理方式  由JDBC管理事务 -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 框架连接池设置  type:连接池类型 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 注册mapper 通知mybatis框架    mapper文件所处的位置 -->
+	<mappers>
+		<!-- resource:mapper文件的路径   相对路径 有一个DAO实现，就写一个mapper-->
+		
+		<mapper resource="com/baizhi/dao/AdminDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/CategoryDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/ProductDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/UserDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/AddressDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/OrderDAOMapper.xml"/>
+		<mapper resource="com/baizhi/dao/OrderItemDAOMapper.xml"/>
+		
+	</mappers>
+
+</configuration>

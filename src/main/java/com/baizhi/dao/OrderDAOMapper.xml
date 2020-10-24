@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.OrderDAO">
+	
+	<!-- 添加订单 -->
+	<insert id="insertOrder">
+		<selectKey keyProperty="order_id" order="BEFORE" resultType="int">
+			select order_id_seq.nextval from  dual
+		</selectKey>
+		insert into dd_order values(#{order_id},#{user_id},#{address_id},#{order_num},
+		#{order_totalprice},#{order_user},#{order_address},#{order_creationtime},#{order_status})
+	</insert>
+	<!-- 查询所有订单 -->
+	<select id="selectAllOrder" resultType="Order">
+		select * from dd_order order by order_id
+	</select>
+	<!-- 根据订单id查询订单 -->
+	<select id="selectOrderById" resultType="Order">
+		select * from dd_order where order_id = #{order_id}
+	</select>
+</mapper>

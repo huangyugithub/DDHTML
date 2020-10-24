@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.AddressDAO">
+	
+	<!-- 查询用户下的所有地址 -->
+	<select id="selectAddresByUser" resultType="Address">
+		select * from dd_address where dd__user_id = #{dd__user_id} order by dd__user_id
+	</select>
+	<!-- 根据id查询地址 -->
+	<select id="selectAddressById" resultType="Address">
+		select * from dd_address where address_id = #{address_id}
+	</select>
+	<!-- 新建地址 -->
+	<insert id="insertAddress">
+		<selectKey keyProperty="address_id" order="BEFORE" resultType="int">
+			select dd_address_seq.nextval from  dual
+		</selectKey>
+		insert into dd_address values(#{address_id},#{dd__user_id},#{address_name},
+		#{address_zip},#{address_telephone},#{address_phone})
+	</insert>
+	<!-- 修改地址 -->
+	<update id="updateAddress">
+		update dd_address set dd__user_id=#{dd__user_id},address_name=#{address_name},
+		address_zip=#{address_zip},address_telephone=#{address_telephone},address_phone=#{address_phone}
+		where address_id=#{address_id}
+	</update>
+</mapper>

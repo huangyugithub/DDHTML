@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.OrderItemDAO">
+
+	<!-- type:实体类全限定名   id:为当前结果映射起个名字 -->
+	<resultMap type="OrderItem" id="OrderItemResultMap">
+		<!--id是主键     clumn:要映射的列名     property:要映射的属性名 -->
+		<id column="shopcar_id" property="shopcar_id"/>
+		<result column="order_id" property="order_id"/>
+		<result column="product_id" property="product_id"/>
+		<result column="shopcar_totalprice" property="shopcar_totalprice"/>
+		<result column="shopcar_satus" property="shopcar_satus"/>
+		<result column="shopcar_smalltatal" property="shopcar_smalltatal"/>
+		<result column="shopcar_counts" property="shopcar_counts"/>
+		<!-- 映射关系属性    
+			对象:association   javaType
+			集合:collection    ofType-->
+			<!-- property:关系属性的引用名     javaType:元素类型-->
+		<association property="product" javaType="Product">
+			<id column="product_id" property="product_id"/>
+			<result column="category_id" property="category_id"/>
+			<result column="prodct_name" property="prodct_name"/>
+			<result column="prduct_price" property="prduct_price"/>
+			<result column="prduct_ddprice" property="prduct_ddprice"/>
+			<result column="prduct_cover" property="prduct_cover"/>
+
+		</association>
+	</resultMap>
+	
+	<!-- 添加订单项 -->
+	<insert id="insertOrderItem">
+		<selectKey keyProperty="shopcar_id" order="BEFORE" resultType="int">
+			select shopcar_id_seq.nextval from  dual
+		</selectKey>
+		insert into dd_caritem values(#{shopcar_id},#{order_id},#{product_id},#{shopcar_totalprice},
+		#{shopcar_satus},#{shopcar_smalltatal},#{shopcar_counts})
+	</insert>
+	<!-- 查询当前订单下的订单项   订单详细信息  包括商品信息-->
+	<select id="selectOrderItem" resultMap="OrderItemResultMap">
+		
+		select c.*,p.product_id,p.prodct_name,p.prduct_price,p.prduct_ddprice,p.prduct_cover 
+			from dd_caritem c inner join dd_product p 
+			on c.product_id = p.product_id 
+			where c.order_id = #{order_id}
+	</select>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.CategoryDAO">
+	
+	
+	<!-- 查询所有类别 -->
+	<select id="selectAllCategory" resultType="Category">
+		select category_id,category_name,dd__category_id,category_class 
+		from dd_category order by category_class , category_id
+	</select>
+	<!-- 添加一级分类 -->
+	<insert id="insertCategory">
+		<selectKey keyProperty="category_id" order="BEFORE" resultType="int">
+			select  category_id_seq.nextval from  dual
+		</selectKey>
+		insert into dd_category values(#{category_id},#{dd__category_id},#{category_name},#{category_byclass},#{category_class})
+	</insert>
+	<!-- 删除分类 -->
+	<delete id="deleteCategory">
+		delete from dd_category where category_id = #{category_id}
+	</delete>
+	<!-- 查询所有二级类别 -->
+	<select id="selectTwoCategory" resultType="Category">
+		select * from dd_category where category_class = 2 order by category_id
+	</select>
+	<!-- 根据类别id查询 类别-->
+	<select id="selectCategoryById" resultType="Category">
+		select * from dd_category where category_id = #{category_id}
+	</select>
+	<!-- 查询当前1级类别下的所有2级类别    或 当前2级类别的所有兄弟类别-->
+	<select id="selectTwoCategoryByOneId" resultType="Category">
+		
+		<if test="dd__category_id==null">
+			<!-- 传过来的是1级类别 -->
+			select * from dd_category where dd__category_id = #{category_id}
+		</if>
+		<if test="dd__category_id!=null">
+			select * from dd_category where dd__category_id = #{dd__category_id}
+		</if>
+	</select>
+	<!-- 查询当前类别所属的1级类别的id -->
+	<select id="selectOneCategoryById" resultType="Category">
+		<if test="dd__category_id==null">
+			select * from dd_category where category_id = #{category_id}
+		</if>
+		<if test="dd__category_id!=null">
+			select * from dd_category where category_id = #{dd__category_id}
+		</if>
+	</select>
+	<!-- 查询当前2级类别的  所有兄弟类别  下的商品数-->
+	<select id="selectCategoryProductCount" resultType="Category">
+		select category_id , count(*) as category_byclass from dd_product where category_id in (
+			select category_id from dd_category where dd__category_id = #{category_id}
+		)group by category_id
+			
+	</select>
+</mapper>

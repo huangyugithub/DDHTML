@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.UserDAO">
+
+	<select id="selectAllUser" resultType="User">
+		select * from dd_user
+	</select>
+	<!-- 修改用户状态 -->
+	<update id="updateUser">
+		update dd_user set user_status = #{user_status } where user_id = #{user_id}
+	</update>
+	<!-- 根据邮箱查找用户 -->
+	<select id="selectUserByEmail" resultType="User">
+		select * from dd_user where user_eamil = #{email}
+	
+	</select>
+	<!-- 添加用户   注册 -->
+	<insert id="insertUser">
+		<selectKey keyProperty="user_id" order="BEFORE" resultType="int">
+			select dd_user_seq.nextval from dual
+		</selectKey>
+		insert into dd_user values(#{user_id},#{user_eamil},#{user_password},#{user_status},
+		#{user_name},#{user_ukey},#{user_joindate})
+	</insert>
+	<!-- 通过id修改用户 -->
+	<update id="updateUserById">
+		update dd_user 
+		<set >
+			<if test="user_eamil!=null">user_eamil = #{user_eamil},</if>
+			<if test="user_password!=null">user_password = #{user_password},</if>
+			<if test="user_status!=null">user_status = #{user_status},</if>
+			<if test="user_name!=null">user_name = #{user_name},</if>
+			<if test="user_ukey!=null">user_ukey = #{user_ukey}</if>
+		</set>
+		where user_id = #{user_id}
+	</update>
+	<!-- 根据id查询单个用户 -->
+	<select id="selectUserById" resultType="User">
+		select * from dd_user where user_id = #{user_id}
+	</select>
+</mapper>

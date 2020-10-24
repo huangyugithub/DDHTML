@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace: 要实现DAO接口的全限定名 -->
+<mapper namespace="com.baizhi.dao.ProductDAO">
+	
+	<!-- 分页查询商品 -->
+	<select id="selectFYProduct" resultType="Product">
+		select * from (select p.*,rownum as rn from dd_product p) 
+		where rn between #{firstCount} and #{lastCount}
+	</select>
+	<!-- 查询商品总条数 -->
+	<select id="selectTotalCount" resultType="int">
+		select count(*) from dd_product
+	</select>
+	<!-- 添加商品 -->
+	<insert id="insertProduct">
+		<selectKey keyProperty="product_id" order="BEFORE" resultType="int">
+			select product_id_seq.nextval from dual
+		</selectKey>
+		insert into dd_product values(#{product_id},#{category_id},#{prodct_name},#{prduct_price},
+		#{prduct_ddprice},#{product_counts},#{prduct_author},#{prduct_publisher},#{prduct_publishtime},
+		#{prduct_printtime},#{prduct_ISBN},#{prduct_salescount},#{prduct_format},#{prduct_paper},#{prduct_packaging},
+		#{prduct_pages},#{prduct_words},#{prduct_cover},#{prduct_bjtj},#{prduct_nrjs},#{prduct_zzjs},
+		#{prduct_jbml},#{prduct_comments})
+	</insert>
+	<!-- 删除商品 -->
+	<delete id="deleteProduct">
+		delete dd_product where product_id = #{product_id}
+	</delete>
+	<!-- 书名查询商品 -->
+	<select id="nameSelectProduct" resultType="Product">
+		select * from dd_product where prodct_name like '%${prodct_name}%'
+	</select>
+	<!-- 书名查询商品 -->
+	<select id="authorSelectProduct" resultType="Product">
+		select * from dd_product where prduct_author like '%${prduct_author}%'
+	</select>
+	<!-- 查询单个商品 -->
+	<select id="selectOneProduct" resultType="Product">
+		select * from dd_product where product_id = #{product_id}
+	</select>
+	<!-- 修改商品 -->
+	<update id="updateProduct">
+		update dd_product
+		<trim prefix="set" suffixOverrides=",">
+			<if test="category_id!=null">category_id=#{category_id},</if>
+			<if test="prodct_name!=null">prodct_name=#{prodct_name},</if>
+			<if test="prduct_price!=null"> prduct_price=#{prduct_price},</if>
+			<if test="prduct_ddprice!=null"> prduct_ddprice=#{prduct_ddprice},</if>
+			<if test="product_counts!=null"> product_counts=#{product_counts},</if>
+    		<if test="prduct_author!=null"> prduct_author=#{prduct_author},</if>
+   			<if test="prduct_publisher!=null"> prduct_publisher=#{prduct_publisher},</if>
+		    <if test="prduct_publishtime!=null"> prduct_publishtime=#{prduct_publishtime},</if>
+		    <if test="prduct_printtime!=null"> prduct_printtime=#{prduct_printtime},</if>
+		    <if test="prduct_ISBN!=null"> prduct_ISBN=#{prduct_ISBN},</if>
+		    <if test="prduct_salescount!=null"> prduct_salescount=#{prduct_salescount},</if>
+		    <if test="prduct_format!=null"> prduct_format=#{prduct_format},</if>
+		    <if test="prduct_paper!=null"> prduct_paper=#{prduct_paper},</if>
+		    <if test="prduct_packaging!=null"> prduct_packaging=#{prduct_packaging},</if>
+		    <if test="prduct_pages!=null"> prduct_pages=#{prduct_pages},</if>
+		    <if test="prduct_words!=null"> prduct_words=#{prduct_words},</if>
+		    <if test="prduct_cover!=null"> prduct_cover=#{prduct_cover},</if>
+		    <if test="prduct_bjtj!=null"> prduct_bjtj=#{prduct_bjtj},</if>
+		    <if test="prduct_nrjs!=null"> prduct_nrjs=#{prduct_nrjs},</if>
+		    <if test="prduct_zzjs!=null"> prduct_zzjs=#{prduct_zzjs},</if>
+		    <if test="prduct_jbml!=null"> prduct_jbml=#{prduct_jbml},</if>
+		    <if test="prduct_comments!=null"> prduct_comments=#{prduct_comments}</if>
+		</trim>
+		where product_id = #{product_id}
+	</update>
+	
+	<!-- 根据编辑推荐查询前2个商品 -->
+	<select id="selectProductByBjtj" resultType="Product">
+		select * from (select * from dd_product order by prduct_bjtj desc) where rownum &lt; 3
+	</select>
+	<!-- 根据销量查询前8 -->
+	<select id="selectProductByXl" resultType="Product">
+		select * from (select * from dd_product order by prduct_salescount desc) where rownum &lt;= 8
+	</select>
+	<!-- 根据最新上架排序查询前8 （出版时间） -->
+	<select id="selectProductByNew" resultType="Product">
+		select * from (select * from dd_product order by prduct_publishtime desc) where rownum &lt; 9
+	</select>
+	<!-- 新书热卖，先按上架时间查询，结果再按销量排序，前8    的新书销量排行-->
+	<select id="selectProductByNewAndXl" resultType="Product">
+		
+		select * from (
+			select * from(
+				select * from dd_product where prduct_publishtime between sysdate-30 and sysdate
+				order by prduct_publishtime desc
+			)order by prduct_salescount desc
+		) where rownum &lt; 9
+
+	</select>
+	<!-- 查询指定1\2级类别下的所有商品  分页-->
+	<select id="selectCategoryProduct" resultType="Product">
+		select * from (select p.*,rownum as rn from (
+		
+		<if test="category.dd__category_id==null">
+			select * from dd_product where category_id 
+				in(select category_id from dd_category where dd__category_id = #{category.category_id})
+		</if>
+		<if test="category.dd__category_id!=null">
+			select * from dd_product where category_id = #{category.category_id}
+		</if>
+		 ) p) 
+		where rn between #{page.firstCount} and #{page.lastCount}
+		
+	
+	</select>
+	<!-- 查询指定1\2级类别下的所有商品的总数 -->
+	<select id="selectCategoryProductCount" resultType="int">
+		select count(*) from 
+		<if test="dd__category_id==null">
+			dd_product where category_id 
+				in(select category_id from dd_category where dd__category_id = #{category_id}) 
+		</if>
+		<if test="dd__category_id!=null">
+			dd_product where category_id = #{category_id}
+		</if>
+			
+	</select>
+	<!-- 修改商品销量、库存 -->
+	<update id="updateProductXK">
+		update dd_product set product_counts = product_counts-#{productCount},prduct_salescount=prduct_salescount+#{productCount}
+		where product_id = #{product_id}
+	</update>
+</mapper>
