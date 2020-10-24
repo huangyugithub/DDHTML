@@ -180,6 +180,6 @@ public class MybatisTest {
 	public void hehess(){
 	
 		system.out.println("远程仓库的第一次修改+哈哈哈哈哈哈哈");
-		
+		system.out.println("本地仓库的第一次修改+hhh");
 	}
 }
